@@ -73,7 +73,7 @@ export default function App() {
   }
   
   // Reshuffles but within the same article
-  const reDigHandler = (id, title) =>{
+  const reDigHandler = (id, title) => {
     ref.current.continuousStart();
     fetch("https://shielded-spire-49104-9bcb13268067.herokuapp.com/https://us-west1-pickabox.cloudfunctions.net/pickabox-space?id=" + id)
         .then((resp) => resp.json())
@@ -81,11 +81,11 @@ export default function App() {
             ref.current.complete();
             setSubTitles(title);
             setId(id);
-            setArticleData(data.articles)
+            setArticleData(data.articles);
+        })
         .catch((err) => {
           console.error(err);
         })
-    });
   }
 
   // Fetches API call and intialize article view history
@@ -194,7 +194,7 @@ export default function App() {
         <Scroll showBelow={50} />
         
         <Grid style={footer} item xs={12} >
-          <h3 style={{fontFamily: 'Changa', }}>Created by <a target="_blank" href="https://github.com/kristofgazso/pickabox.space" style={{color: '#2565AE'}}>The HAKers</a></h3>
+          <h3 style={{fontFamily: 'Changa', }}>Created by <a target="_blank" rel="noreferrer" href="https://github.com/kristofgazso/pickabox.space" style={{color: '#2565AE'}}>The HAKers</a></h3>
         </Grid>
 
       </Grid>

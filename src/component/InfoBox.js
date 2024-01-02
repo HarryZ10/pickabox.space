@@ -10,12 +10,17 @@ const InfoBox = (props) => {
     window.open(link);
     window.focus();
   }
+  console.log(props.data)
+  const imageURL = props.data.images ? props.data.images.source :  null;
 
   return (
     <Grid container item xs={12} sm={6} md={4} lg={3} spacing={2}>
       <Card style={box} className='wikiBox shadow-box-example hoverable'>
         <Card.Title style={boxTitle} onClick={props.dig(props.data.title, props.data.id, props.data.url)}>{props.data.title}</Card.Title>
         <Card.Body style={boxBody} onClick={props.dig(props.data.title, props.data.id, props.data.url)} >
+          { imageURL ?
+            <Card.Img src={imageURL} style={imageStyle} width='312px' /> : null
+          }
           <Card.Text>
             {props.data.extract}
           </Card.Text>
@@ -26,6 +31,12 @@ const InfoBox = (props) => {
     </Grid>
   )
 }
+
+const imageStyle = {
+  display: 'flex',
+  justifyContent: 'center'
+}
+
 const boxBody={
   // overflowY: 'scroll',
   // minHeight: '60%',
