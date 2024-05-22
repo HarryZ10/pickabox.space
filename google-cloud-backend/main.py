@@ -2,11 +2,6 @@ import requests
 import random
 
 # This function is hosted on Google Cloud Functions, callable through 
-# https://us-central1-sachacks-305315.cloudfunctions.net/pickabox-space
-
-# If you want to query for articles related to a specific article through links, call
-# https://us-central1-sachacks-305315.cloudfunctions.net/pickabox-space?id=ID_OF_ARTICLE
-
 def parse_json_for_articles(json):
     pages = json.get("query").get("pages")
     articles = []
@@ -22,10 +17,13 @@ def parse_json_for_articles(json):
         title = page.get("title")
         url = page.get("fullurl")
         id = page.get("pageid")
+        images = page.get('original')
 
         article["title"] = title
         article["url"] = url
         article["id"] = id
+        article["images"] = images
+
         articles.append(article)
 
 
@@ -74,7 +72,8 @@ def main(request):
                 # Make selection random
                 random.shuffle(titles)
                 cat_string = "%7C".join(titles[:10])
-                search_url = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cinfo&list=&titles="+cat_string+"&redirects=1&exlimit=max&exintro=1&explaintext=1&inprop=url"
+                # search_url = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cinfo&list=&titles="+cat_string+"&redirects=1&exlimit=max&exintro=1&explaintext=1&inprop=url"
+                search_url = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cinfo%7Cpageimages&list=&titles=" + cat_string + "&redirects=1&exlimit=max&exintro=1&explaintext=1&inprop=url&piprop=original"
                 search_res = requests.get(search_url).json()
 
                 articles = parse_json_for_articles(search_res)
@@ -84,11 +83,10 @@ def main(request):
         else:
             return {"articles": [{"title": "No articles found", "extract": "Click the start over button to try again"}]}
 
-    # If they query for random articles
+    # If they query for random articles
     else:
         # Get 10 random articles, including the introductory extract, urls, titles
-        wiki_url = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cinfo&generator=random&redirects=1&exlimit=max&exintro=1&explaintext=1&exsectionformat=plain&excontinue=1&inprop=url&intestactions=&grnnamespace=0&grnfilterredir=nonredirects&grnlimit=10"
+        wiki_url = "https://en.wikipedia.org/w/api.php?action=query&format=json&prop=extracts%7Cinfo%7Cpageimages&generator=random&redirects=1&exlimit=max&exintro=1&explaintext=1&exsectionformat=plain&excontinue=1&inprop=url&intestactions=&grnnamespace=0&grnfilterredir=nonredirects&grnlimit=10&piprop=original"
         res = requests.get(wiki_url).json()
         articles = parse_json_for_articles(res)
         return {"articles": articles}
-
